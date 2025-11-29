@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy Adjustment Visualization 2023-2024</title>
+    <!-- Import Chart.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* Defining the Green Palette Variables */
+        :root {
+            --bg-color: #ffffff;    /* CHANGED: Pure white background */
+            --card-bg: #ffffff;     /* White card background */
+            --text-primary: #1b5e20; /* Dark forest green for main text */
+            --text-secondary: #558b2f; /* Lighter green for secondary text */
+            --heading-color: #004d40; /* Deep teal green for headings */
+            --table-header-bg: #e8f5e9; /* Pale green for table headers */
+            --border-color: #c8e6c9; /* Light green border */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: var(--text-primary);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--heading-color);
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            color: var(--heading-color);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        /* Dashboard Grid Layout */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            /* Added slightly stronger border since bg is white */
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); 
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(27, 94, 32, 0.1);
+        }
+
+        /* Specific layout for the full-width table card */
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--table-header-bg);
+            color: var(--heading-color);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f9fbe7; /* Very light lime hover */
+        }
+
+        /* Canvas resizing */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .note {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Policy Adjustment Dashboard (2023-2024)</h1>
+
+    <div class="dashboard">
+        
+        <!-- Chart 1: Village Cadres -->
+        <div class="card">
+            <h2>1. Village Cadre Annual Compensation (2024)</h2>
+            <div class="chart-container">
+                <canvas id="cadreChart"></canvas>
+            </div>
+            <p class="note">Comparing compensation between Interior and Border counties.</p>
+        </div>
+
+        <!-- Chart 2: Border Residents -->
+        <div class="card">
+            <h2>2. Border Resident Subsidies (2024)</h2>
+            <div class="chart-container">
+                <canvas id="borderChart"></canvas>
+            </div>
+            <p class="note">Subsidies for residents in Frontline vs. General border villages.</p>
+        </div>
+
+        <!-- Chart 3: Poverty Support -->
+        <div class="card">
+            <h2>3. Poverty Basic Living Subsidy (2023)</h2>
+            <div class="chart-container">
+                <canvas id="povertyChart"></canvas>
+            </div>
+            <p class="note">Fixed annual subsidies for centralized and dispersed supply.</p>
+        </div>
+
+        <!-- Table: Nursing Care Logic -->
+        <div class="card full-width">
+            <h2>4. Nursing Care Fee Calculation Standards (Percentage Based)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Supply Type</th>
+                        <th>Care Level</th>
+                        <th>Calculation Base</th>
+                        <th>Rate</th>
+                        <th>Frequency</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Dispersed Supply</strong></td>
+                        <td>Self-Care</td>
+                        <td>Previous Year Monthly Min. Wage</td>
+                        <td>10%</td>
+                        <td>Per Month</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dispersed Supply</strong></td>
+                        <td>Semi-Disabled</td>
+                        <td>Previous Year Monthly Min. Wage</td>
+                        <td>30%</td>
+                        <td>Per Month</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dispersed Supply</strong></td>
+                        <td>Disabled</td>
+                        <td>Previous Year Monthly Min. Wage</td>
+                        <td>50%</td>
+                        <td>Per Month</td>
+                    </tr>
+                    <tr style="background-color: #f1f8e9;">
+                        <td><strong>Centralized Supply</strong></td>
+                        <td>Semi-Disabled</td>
+                        <td>Current Year Annual Living Std.</td>
+                        <td>10%</td>
+                        <td>Per Year</td>
+                    </tr>
+                    <tr style="background-color: #f1f8e9;">
+                        <td><strong>Centralized Supply</strong></td>
+                        <td>Disabled</td>
+                        <td>Current Year Annual Living Std.</td>
+                        <td>15%</td>
+                        <td>Per Year</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script>
+        // Green Palette Definition for JS
+        const greenPalette = {
+            strong: '27, 94, 32',   // Dark Green
+            medium: '67, 160, 71',  // Medium Green
+            light: '124, 179, 66',  // Light Olive Green
+            teal: '0, 137, 123'     // Teal Greenish
+        };
+
+        // Common Chart Options
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { 
+                    position: 'bottom',
+                    labels: { color: '#1b5e20' } // Dark green legend text
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(27, 94, 32, 0.9)', // Dark green tooltip bg
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) { label += ': '; }
+                            if (context.parsed.y !== null) {
+                                label += new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(context.parsed.y);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: '#e8f5e9' }, // Very pale green grid lines
+                    ticks: { color: '#33691e' } // Medium dark green ticks
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#33691e' }
+                }
+            }
+        };
+
+        // --- CHART 1: Village Cadres (Grouped Bar) ---
+        const ctxCadre = document.getElementById('cadreChart').getContext('2d');
+        new Chart(ctxCadre, {
+            type: 'bar',
+            data: {
+                labels: ['Interior Counties', 'Border Counties'],
+                datasets: [
+                    {
+                        label: 'Secretary & Director',
+                        data: [40060, 44066],
+                        // Strong Green
+                        backgroundColor: `rgba(${greenPalette.strong}, 0.7)`, 
+                        borderColor: `rgb(${greenPalette.strong})`,
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Other Cadres',
+                        data: [32048, 35253],
+                        // Light Green
+                        backgroundColor: `rgba(${greenPalette.light}, 0.7)`, 
+                        borderColor: `rgb(${greenPalette.light})`,
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: commonOptions
+        });
+
+        // --- CHART 2: Border Residents (Distinct Colors) ---
+        const ctxBorder = document.getElementById('borderChart').getContext('2d');
+        new Chart(ctxBorder, {
+            type: 'bar',
+            data: {
+                labels: ['Frontline Village', 'General Border Village'],
+                datasets: [{
+                    label: 'Annual Subsidy',
+                    data: [13800, 6800],
+                    backgroundColor: [
+                        `rgba(${greenPalette.teal}, 0.7)`, // Teal Green
+                        `rgba(${greenPalette.medium}, 0.7)` // Medium Green
+                    ],
+                    borderColor: [
+                        `rgb(${greenPalette.teal})`,
+                        `rgb(${greenPalette.medium})`
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                ...commonOptions,
+                plugins: {
+                    ...commonOptions.plugins,
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // --- CHART 3: Poverty Subsidy (Distinct Colors) ---
+        const ctxPoverty = document.getElementById('povertyChart').getContext('2d');
+        new Chart(ctxPoverty, {
+            type: 'bar',
+            data: {
+                labels: ['Centralized / Urban', 'Rural Dispersed'],
+                datasets: [{
+                    label: 'Basic Living Subsidy',
+                    data: [14778, 8010],
+                    backgroundColor: [
+                        `rgba(${greenPalette.strong}, 0.7)`, // Strong Green
+                        `rgba(${greenPalette.light}, 0.7)`   // Light Green
+                    ],
+                    borderColor: [
+                        `rgb(${greenPalette.strong})`,
+                        `rgb(${greenPalette.light})`
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                ...commonOptions,
+                plugins: {
+                    ...commonOptions.plugins,
+                    legend: { display: false }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
