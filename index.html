@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2024 Policy Adjustment Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            /* Minimalist Palette */
+            --primary: #1b5e20;      /* Dark Green */
+            --primary-hover: #2e7d32;
+            --text-main: #212121;    /* Near Black */
+            --text-muted: #757575;   /* Gray */
+            --border-color: #e0e0e0; /* Light Gray */
+            --highlight: #e65100;    /* Accent for money */
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* --- Header --- */
+        header {
+            margin-bottom: 50px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        h1 { margin: 0 0 10px 0; font-weight: 700; color: var(--text-main); }
+        .subtitle { color: var(--text-muted); font-size: 1rem; }
+
+        /* --- Navigation (Text Only Tabs) --- */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--text-muted);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            font-weight: 700;
+        }
+
+        /* --- Content Layout --- */
+        .content-section {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .content-section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 { font-size: 1.4rem; margin-bottom: 10px; color: var(--primary); }
+        .description { margin-bottom: 25px; line-height: 1.6; color: var(--text-main); }
+
+        /* --- Metrics (Data Points) --- */
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .metric-item {
+            padding-left: 15px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .metric-label { font-size: 0.85rem; color: var(--text-muted); display: block; text-transform: uppercase; letter-spacing: 0.5px; }
+        .metric-value { font-size: 1.8rem; font-weight: 700; color: var(--text-main); display: block; margin: 5px 0; }
+        .metric-sub { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* --- Logic Tables (Clean Borders) --- */
+        .logic-table-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .logic-box {
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 20px;
+        }
+
+        .logic-header {
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: block;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .logic-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 0.9rem;
+        }
+        .logic-row:last-child { border-bottom: none; }
+
+        /* --- Chart Wrapper --- */
+        .chart-wrapper {
+            position: relative;
+            height: 320px;
+            width: 100%;
+            margin-top: 20px;
+            background: #fff;
+        }
+        
+        .note-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fafafa;
+            border: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 700px) {
+            .logic-table-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Government Subsidy Guide (2024)</h1>
+            <p class="subtitle">Select a category below to view specific financial policy details.</p>
+        </header>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchView('border')">Border Residents</button>
+            <button class="tab-btn" onclick="switchView('welfare')">Welfare Support</button>
+            <button class="tab-btn" onclick="switchView('cadre')">Village Cadres</button>
+        </div>
+
+        <div id="border" class="content-section active">
+            <h2>Border Resident Subsidies</h2>
+            <p class="description">Subsidies are allocated based on the proximity of the village to the national border line.</p>
+
+            <div class="metrics-row">
+                <div class="metric-item">
+                    <span class="metric-label">Frontline Village</span>
+                    <span class="metric-value">¥ 13,800</span>
+                    <span class="metric-sub">Per Person / Year</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">General Border Village</span>
+                    <span class="metric-value">¥ 6,800</span>
+                    <span class="metric-sub">Per Person / Year</span>
+                </div>
+            </div>
+
+            <div class="chart-wrapper">
+                <canvas id="chartBorder"></canvas>
+            </div>
+        </div>
+
+        <div id="welfare" class="content-section">
+            <h2>Extreme Poverty & Nursing Support</h2>
+            <p class="description">Support consists of a mandatory Basic Living Allowance plus a conditional Nursing Care Subsidy based on disability level.</p>
+
+            <div class="metrics-row">
+                <div class="metric-item">
+                    <span class="metric-label">Institution Standard</span>
+                    <span class="metric-value">¥ 14,778</span>
+                    <span class="metric-sub">Annual Living Allowance</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Home-based Standard</span>
+                    <span class="metric-value">¥ 8,010</span>
+                    <span class="metric-sub">Annual Living Allowance</span>
+                </div>
+            </div>
+
+            <div class="logic-table-container">
+                <div class="logic-box">
+                    <span class="logic-header">Home-Based Logic (Dispersed)</span>
+                    <div style="font-size:0.85rem; color:#757575; margin-bottom:15px;">Calculation Base: Previous Year Monthly Min. Wage</div>
+                    
+                    <div class="logic-row">
+                        <span>Self-Care Ability</span>
+                        <strong>+10% / Month</strong>
+                    </div>
+                    <div class="logic-row">
+                        <span>Semi-Disabled</span>
+                        <strong>+30% / Month</strong>
+                    </div>
+                    <div class="logic-row">
+                        <span>Fully Disabled</span>
+                        <strong>+50% / Month</strong>
+                    </div>
+                </div>
+
+                <div class="logic-box">
+                    <span class="logic-header">Institution Logic (Centralized)</span>
+                    <div style="font-size:0.85rem; color:#757575; margin-bottom:15px;">Calculation Base: Current Year Annual Living Standard</div>
+                    
+                    <div class="logic-row">
+                        <span>Self-Care Ability</span>
+                        <strong>(Included)</strong>
+                    </div>
+                    <div class="logic-row">
+                        <span>Semi-Disabled</span>
+                        <strong>+10% / Year</strong>
+                    </div>
+                    <div class="logic-row">
+                        <span>Fully Disabled</span>
+                        <strong>+15% / Year</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="cadre" class="content-section">
+            <h2>Village Cadre Compensation</h2>
+            <p class="description">Comparison of annual remuneration packages. Personnel in Border Counties receive higher compensation due to strategic stability responsibilities.</p>
+
+            <div class="chart-wrapper">
+                <canvas id="chartCadre"></canvas>
+            </div>
+            
+            <div class="note-box">
+                <strong>Policy Insight:</strong> The gap in compensation (approx. 10%) reflects the additional duties required for border defense and stability maintenance in border counties.
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- UX Logic ---
+        function switchView(viewId) {
+            // Update Buttons
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // Update Content
+            document.querySelectorAll('.content-section').forEach(c => c.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        // --- Chart Config ---
+        Chart.defaults.font.family = "'Segoe UI', sans-serif";
+        Chart.defaults.color = '#424242';
+
+        const commonConfig = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { 
+                    position: 'bottom',
+                    labels: { usePointStyle: true, boxWidth: 8 }
+                }
+            },
+            scales: {
+                y: { 
+                    beginAtZero: true, 
+                    grid: { color: '#f5f5f5' },
+                    border: { display: false }
+                },
+                x: { 
+                    grid: { display: false },
+                    border: { display: false }
+                }
+            }
+        };
+
+        // 1. Border Chart
+        new Chart(document.getElementById('chartBorder'), {
+            type: 'bar',
+            data: {
+                labels: ['Frontline Village', 'General Village'],
+                datasets: [{
+                    label: 'Annual Subsidy (CNY)',
+                    data: [13800, 6800],
+                    backgroundColor: ['#2e7d32', '#a5d6a7'], // Dark Green / Light Green
+                    barThickness: 50
+                }]
+            },
+            options: { ...commonConfig, plugins: { legend: { display: false } } }
+        });
+
+        // 2. Cadre Chart
+        new Chart(document.getElementById('chartCadre'), {
+            type: 'bar',
+            data: {
+                labels: ['Interior County', 'Border County'],
+                datasets: [
+                    {
+                        label: 'Director/Secretary',
+                        data: [40060, 44066],
+                        backgroundColor: '#1b5e20'
+                    },
+                    {
+                        label: 'Other Staff',
+                        data: [32048, 35253],
+                        backgroundColor: '#81c784'
+                    }
+                ]
+            },
+            options: commonConfig
+        });
+    </script>
+</body>
+</html>
